@@ -16,8 +16,22 @@
     }
     if (degree >= 2 && navigator.onLine) {
       if (data_envelope.id) {
-        data_envelope.checks.remote_sync = Date.parse(Date());
-        $.ajax(..., data_envelope.id, JSON.stringify({"checks":data_envelope.checks, "contents":data_envelope.contents}));
+        data_envelope.checks.remote_start = Date.parse(Date());
+        $.ajax({
+          "url": "http://service.recorder.com:9080",
+          "dataType": "jsonp",
+          "data": data_envelope,
+          "type": "GET",
+          "error": function(XMLHttpRequest, textStatus, errorThrown) {
+            var e = errorThrown||''; 
+            console.log("an error was reported after a request to "+url+" :: "+XMLHttpRequest.statusText+" :: "+textStatus+" :: "+JSON.stringify(e, null, " "));
+            //alert("an error was reported after a request to "+url+" :: "+XMLHttpRequest.statusText+" :: "+textStatus+" :: "+JSON.stringify(e, null, " "));
+          },
+          "success": function(resp) {
+            console.log("resp "+ JSON.stringify(resp));
+            data_envelope.checks.remote_sync = Date.parse(Date());
+          }
+        });
       }
       else {
         
