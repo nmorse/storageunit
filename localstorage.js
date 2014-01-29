@@ -1,8 +1,10 @@
-(funciton () {
+(funciton ($) {
   var outcome = ["storage not availible", "saved to existing", "did not overwrite existing", "created new", "storage operation submitted"];
+  var opt = {proposed_name:"new", overwrite:false};
   if (!storageunit) {storageunit = {};}
   storageunit.localstorage = {};
-  torageunit.localstorage.save = function(proposed_name, overwrite) {
+  torageunit.localstorage.save = function(options) {
+    opt = $.extend(opt, options);
     
     var local_storehb_graphs;
     if (typeof Storage !== "undefined") {
@@ -11,30 +13,30 @@
             localStorage.hb_graphs = "{}";
         }
         local_hb_graphs = JSON.parse(localStorage.hb_graphs);
-        if(local_hb_graphs[proposed_name]) {
-            if (overwrite) {
-                local_hb_graphs[proposed_name] = JSON.parse(export_graph_json(g));
+        if(local_hb_graphs[opt.proposed_name]) {
+            if (opt.overwrite) {
+                local_hb_graphs[opt.proposed_name] = JSON.parse(export_graph_json(g));
                 localStorage.hb_graphs = JSON.stringify(local_hb_graphs);
                 $(document).trigger("hbg_save_status", [{"outcome": outcome[1], "target": "local", "final":true}]);
                 $('#graph_storage').html("local");
-                $('#graph_title').html(proposed_name);
-                g_aux.name = proposed_name;
-                ///$('#graph_input_name_n1').val(proposed_name);
-                ///$('#graph_input_name_n2').val(proposed_name);
+                $('#graph_title').html(opt.proposed_name);
+                g_aux.name = opt.proposed_name;
+                ///$('#graph_input_name_n1').val(opt.proposed_name);
+                ///$('#graph_input_name_n2').val(opt.proposed_name);
             }
             else {
                 $(document).trigger("hbg_save_status", [{"outcome": outcome[2], "target": "local", "final":true}]);
             }
         }
         else {
-            local_hb_graphs[proposed_name] = JSON.parse(export_graph_json(g));
+            local_hb_graphs[opt.proposed_name] = JSON.parse(export_graph_json(g));
             localStorage.hb_graphs = JSON.stringify(local_hb_graphs);
             $(document).trigger("hbg_save_status", [{"outcome": outcome[3], "target": "local", "final":true}]);
             $('#graph_storage').html("local");
-            $('#graph_title').html(proposed_name);
-            g_aux.name = proposed_name;
-            ///$('#graph_input_name_n1').val(proposed_name);
-            ///$('#graph_input_name_n2').val(proposed_name);
+            $('#graph_title').html(opt.proposed_name);
+            g_aux.name = opt.proposed_name;
+            ///$('#graph_input_name_n1').val(opt.proposed_name);
+            ///$('#graph_input_name_n2').val(opt.proposed_name);
         }
     }
     else {
@@ -51,4 +53,4 @@
         }
     }
   };
-})();
+})(JQuery);
