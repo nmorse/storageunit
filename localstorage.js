@@ -1,4 +1,5 @@
 (funciton ($) {
+  var unit_name = "storage_u_name"; // change this to whatever fits your project.
   var outcome = {"no_storage":"storage not availible", "overwritten":"saved to existing", "not_overwritten":"did not overwrite existing", "new":"created new", "pending":"storage operation submitted"};
   var opt = {proposed_name:"new", overwrite:false};
   if (!storageunit) {storageunit = {};}
@@ -6,17 +7,17 @@
   torageunit.localstorage.save = function(options) {
     opt = $.extend(opt, options);
     
-    var local_storehb_graphs;
+    var local_storeage_unit;
     if (typeof Storage !== "undefined") {
         //use local storage
-        if (!localStorage.hb_graphs) {
-            localStorage.hb_graphs = "{}";
+        if (!localStorage[unit_name]) {
+            localStorage[unit_name] = "{}";
         }
-        local_hb_graphs = JSON.parse(localStorage.hb_graphs);
-        if(local_hb_graphs[opt.proposed_name]) {
+        local_su = JSON.parse(localStorage[unit_name]);
+        if(local_su[opt.proposed_name]) {
             if (opt.overwrite) {
-                local_hb_graphs[opt.proposed_name] = JSON.parse(export_graph_json(g));
-                localStorage.hb_graphs = JSON.stringify(local_hb_graphs);
+                local_su[opt.proposed_name] = JSON.parse(export_graph_json(g));
+                localStorage[unit_name] = JSON.stringify(local_su);
                 $(document).trigger("hbg_save_status", [{"outcome": outcome.overwritten, "target": "local", "final":true}]);
                 $('#graph_storage').html("local");
                 $('#graph_title').html(opt.proposed_name);
@@ -29,8 +30,8 @@
             }
         }
         else {
-            local_hb_graphs[opt.proposed_name] = JSON.parse(export_graph_json(g));
-            localStorage.hb_graphs = JSON.stringify(local_hb_graphs);
+            local_su[opt.proposed_name] = JSON.parse(export_graph_json(g));
+            localStorage[unit_name] = JSON.stringify(local_su);
             $(document).trigger("hbg_save_status", [{"outcome": outcome.new, "target": "local", "final":true}]);
             $('#graph_storage').html("local");
             $('#graph_title').html(opt.proposed_name);
